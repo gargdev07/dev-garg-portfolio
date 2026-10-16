@@ -1,4 +1,6 @@
 (() => {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   const lookToggle = document.querySelector('.look-toggle');
   const lookMessage = document.querySelector('#look-closer-message');
   if (lookToggle && lookMessage) {
@@ -9,6 +11,54 @@
       lookToggle.setAttribute('aria-expanded', String(expanded));
       lookMessage.hidden = !expanded;
       lookToggle.querySelector('.look-toggle-icon').textContent = expanded ? '−' : '+';
+    });
+  }
+
+  const canvas = document.querySelector('.hero-canvas');
+  const canvasNodes = [...document.querySelectorAll('.canvas-node')];
+  const canvasNote = document.querySelector('.canvas-current-note');
+  const canvasNotes = {
+    systems: 'Organize many listings<br>into a relational model.',
+    patterns: 'Compare a long history<br>with a forecast.',
+    probability: 'Follow states as a<br>match changes.',
+    verification: 'Give evidence a<br>clearer record.'
+  };
+  if (canvas && canvasNodes.length) {
+    const activateNode = node => {
+      canvas.dataset.active = node.dataset.interest;
+      if (canvasNote) canvasNote.innerHTML = canvasNotes[node.dataset.interest];
+    };
+    const clearNode = node => {
+      if (document.activeElement !== node) {
+        canvas.removeAttribute('data-active');
+        if (canvasNote) canvasNote.innerHTML = 'Select a point<br>to follow a question.';
+      }
+    };
+    canvasNodes.forEach(node => {
+      node.addEventListener('pointerenter', () => activateNode(node));
+      node.addEventListener('pointerdown', () => activateNode(node));
+      node.addEventListener('pointerleave', () => clearNode(node));
+      node.addEventListener('focus', () => activateNode(node));
+      node.addEventListener('blur', () => clearNode(node));
+    });
+    if ('IntersectionObserver' in window) {
+      const canvasObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => canvas.classList.toggle('is-in-view', entry.isIntersecting));
+      }, {rootMargin: '80px'});
+      canvasObserver.observe(canvas);
+    }
+  }
+
+  const sideQuestTrigger = document.querySelector('[data-side-quest-trigger]');
+  const sideQuestReturn = document.querySelector('[data-side-quest-return]');
+  if (sideQuestTrigger) {
+    sideQuestTrigger.addEventListener('click', () => {
+      document.documentElement.classList.add('side-quest-mode');
+    });
+  }
+  if (sideQuestReturn) {
+    sideQuestReturn.addEventListener('click', () => {
+      document.documentElement.classList.remove('side-quest-mode');
     });
   }
 
@@ -24,10 +74,9 @@
           await navigator.clipboard.writeText(emailAddress);
           copied = true;
         } catch (_) {
-          // Try the legacy selection method below when clipboard permission is unavailable.
+          // Fall through to the selection-based copy when browser permission is unavailable.
         }
       }
-
       if (!copied && typeof document.execCommand === 'function') {
         let selectionField;
         try {
@@ -48,106 +97,15 @@
           copyEmailButton.focus({preventScroll: true});
         }
       }
-
       copyStatus.textContent = copied
         ? 'Email copied.'
         : 'Copy wasn’t available. Select the email address above to copy it.';
     });
   }
 
-  const traceButton = document.querySelector('.trace-button');
-  const observationPoints = [...document.querySelectorAll('.observation-point')];
-  const observationLinks = [...document.querySelectorAll('.observation-link')];
-  const observationStatus = document.querySelector('#observation-status');
-  if (traceButton && observationPoints.length && observationLinks.length) {
-    traceButton.hidden = false;
-    const traceLabel = traceButton.querySelector('.trace-label');
-    let sequenceTimer = null;
-    let sequenceIndex = 0;
-    const clearSequence = () => {
-      if (sequenceTimer !== null) window.clearTimeout(sequenceTimer);
-      sequenceTimer = null;
-    };
-    const setObservation = (point, announce = true) => {
-      observationPoints.forEach(item => {
-        const active = item === point;
-        item.classList.toggle('is-active', active);
-        item.setAttribute('aria-pressed', String(active));
-      });
-      const connectedLinks = new Set(point.dataset.links.split(/\s+/));
-      observationLinks.forEach(link => {
-        const visible = connectedLinks.has(link.dataset.link);
-        link.classList.toggle('is-visible', visible);
-        link.style.animationDelay = visible ? `${Number(link.dataset.link) * 70}ms` : '';
-      });
-      if (announce && observationStatus) observationStatus.textContent = point.getAttribute('aria-label');
-    };
-    const resetObservations = () => {
-      clearSequence();
-      observationPoints.forEach(point => {
-        point.classList.remove('is-active');
-        point.setAttribute('aria-pressed', 'false');
-      });
-      observationLinks.forEach(link => {
-        link.classList.remove('is-visible');
-        link.style.animationDelay = '';
-      });
-      traceButton.setAttribute('aria-pressed', 'false');
-      traceLabel.textContent = 'TRACE THE PATTERN';
-      if (observationStatus) observationStatus.textContent = 'Observation path reset.';
-    };
-    const traceNext = () => {
-      if (sequenceIndex >= observationPoints.length) {
-        sequenceTimer = null;
-        traceLabel.textContent = 'RESET OBSERVATIONS';
-        return;
-      }
-      setObservation(observationPoints[sequenceIndex]);
-      sequenceIndex += 1;
-      sequenceTimer = window.setTimeout(traceNext, 780);
-    };
-    observationPoints.forEach(point => {
-      point.addEventListener('click', () => {
-        clearSequence();
-        sequenceIndex = 0;
-        traceButton.setAttribute('aria-pressed', 'false');
-        traceLabel.textContent = 'TRACE THE PATTERN';
-        setObservation(point);
-      });
-      point.addEventListener('keydown', event => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          point.dispatchEvent(new MouseEvent('click', {bubbles: true}));
-        }
-      });
-    });
-    traceButton.addEventListener('click', () => {
-      if (traceButton.getAttribute('aria-pressed') === 'true') {
-        resetObservations();
-        return;
-      }
-      traceButton.setAttribute('aria-pressed', 'true');
-      sequenceIndex = 0;
-      clearSequence();
-      if (reduceMotion) {
-        observationPoints.forEach(point => {
-          point.classList.remove('is-active');
-          point.setAttribute('aria-pressed', 'false');
-        });
-        observationLinks.forEach(link => link.classList.add('is-visible'));
-        traceLabel.textContent = 'RESET OBSERVATIONS';
-        if (observationStatus) observationStatus.textContent = 'The observation pattern is visible.';
-        return;
-      }
-      traceNext();
-    });
-  }
-
   const menuButton = document.querySelector('.menu-toggle');
   const nav = document.querySelector('#nav-links');
   const navLinks = [...document.querySelectorAll('#nav-links a')];
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   if (menuButton && nav) {
     const closeMenu = () => {
       menuButton.setAttribute('aria-expanded', 'false');
@@ -172,14 +130,15 @@
     });
   }
 
-  document.querySelector('#year').textContent = new Date().getFullYear();
+  const year = document.querySelector('#year');
+  if (year) year.textContent = new Date().getFullYear();
 
   const sections = [...document.querySelectorAll('main section[id]')];
   if ('IntersectionObserver' in window) {
     const activeObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          const target = document.querySelector(`#nav-links a[href="#${entry.target.id}"]`);
+          const target = document.querySelector('#nav-links a[href="#' + entry.target.id + '"]');
           navLinks.forEach(link => link.removeAttribute('aria-current'));
           if (target) target.setAttribute('aria-current', 'location');
         }
@@ -188,7 +147,7 @@
     sections.forEach(section => activeObserver.observe(section));
 
     if (!reduceMotion) {
-      const revealItems = document.querySelectorAll('.section-heading, .about-body, .project-card, .research-card, .skill-group, .cert-item');
+      const revealItems = document.querySelectorAll('.section-heading, .about-body, .case-study, .interest-card, .research-card, .skill-group, .cert-item');
       document.body.classList.add('js-ready');
       const revealObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
