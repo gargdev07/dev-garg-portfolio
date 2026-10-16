@@ -48,18 +48,36 @@
         <div class="visual-topline"><span>FIELD NOTE / 01</span><span>ANALYSIS IN MOTION</span></div>
         <div class="visual-grid">
           <span class="grid-label label-y">SIGNAL</span><span class="grid-label label-x">OBSERVATIONS →</span>
-          <svg viewBox="0 0 500 290" role="presentation" aria-hidden="true" class="signal-svg">
+          <svg viewBox="0 0 500 290" role="group" aria-label="Interactive observation-to-discovery illustration" class="signal-svg">
             <defs><linearGradient id="area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#72a7ff" stop-opacity=".22"/><stop offset="1" stop-color="#72a7ff" stop-opacity="0"/></linearGradient></defs>
             <path class="signal-area" d="M0 237 C34 226 35 190 72 201 S119 230 148 172 S192 183 220 143 S258 164 287 111 S329 139 355 85 S396 105 421 57 S462 77 500 24 L500 290 L0 290Z"/>
-            <path class="connection-lines" d="M72 201 L148 172 L220 143 L287 111 L355 85 L421 57"/>
+            <path class="observation-link" data-link="1" d="M86 157 C126 161 151 202 184 220"/>
+            <path class="observation-link" data-link="2" d="M184 220 C219 189 245 138 286 112"/>
+            <path class="observation-link" data-link="3" d="M286 112 C331 83 374 79 414 91"/>
+            <path class="observation-link" data-link="4" d="M184 220 C274 253 350 166 414 91"/>
             <path class="signal-line" d="M0 237 C34 226 35 190 72 201 S119 230 148 172 S192 183 220 143 S258 164 287 111 S329 139 355 85 S396 105 421 57 S462 77 500 24"/>
-            <circle cx="287" cy="111" r="5"/><circle cx="421" cy="57" r="5"/>
+            <g class="observation-point" data-observation="0" data-links="1 4" role="button" tabindex="0" aria-pressed="false" aria-label="Observation one: notice a shift">
+              <circle class="point-halo" cx="86" cy="157" r="12"/><circle class="point-core" cx="86" cy="157" r="4.5"/>
+              <text class="point-label" x="96" y="151" aria-hidden="true">notice a shift</text>
+            </g>
+            <g class="observation-point" data-observation="1" data-links="1 2" role="button" tabindex="0" aria-pressed="false" aria-label="Observation two: compare what changed">
+              <circle class="point-halo" cx="184" cy="220" r="12"/><circle class="point-core" cx="184" cy="220" r="4.5"/>
+              <text class="point-label" x="194" y="215" aria-hidden="true">compare what changed</text>
+            </g>
+            <g class="observation-point" data-observation="2" data-links="2 3" role="button" tabindex="0" aria-pressed="false" aria-label="Observation three: follow a pattern">
+              <circle class="point-halo" cx="286" cy="112" r="12"/><circle class="point-core" cx="286" cy="112" r="4.5"/>
+              <text class="point-label" x="296" y="105" aria-hidden="true">follow a pattern</text>
+            </g>
+            <g class="observation-point" data-observation="3" data-links="3 4" role="button" tabindex="0" aria-pressed="false" aria-label="Observation four: ask a new question">
+              <circle class="point-halo" cx="414" cy="91" r="12"/><circle class="point-core" cx="414" cy="91" r="4.5"/>
+              <text class="point-label" x="404" y="76" text-anchor="end" aria-hidden="true">ask a new question</text>
+            </g>
             <path class="signal-guide" d="M287 111V290M421 57V290"/>
           </svg>
-          <div class="visual-note note-one"><i></i><span>observe</span></div><div class="visual-note note-two"><i></i><span>model</span></div><div class="visual-note note-three"><i></i><span>interpret</span></div>
+          <span class="sr-only" id="observation-status" aria-live="polite"></span>
           <div class="visual-index">FIG. 01 <span>ILLUSTRATIVE</span></div>
         </div>
-        <div class="visual-footer"><span>FROM RAW INPUT</span><span class="footer-arrow">⟶</span><span>TO USEFUL INSIGHT</span><button class="trace-button" type="button" aria-pressed="false" hidden><span class="trace-label">SHOW OBSERVATION PATH</span><span aria-hidden="true">↗</span></button></div>
+        <div class="visual-footer"><span>FROM RAW INPUT</span><span class="footer-arrow">⟶</span><span>TO USEFUL INSIGHT</span><button class="trace-button" type="button" aria-pressed="false" hidden><span class="trace-label">TRACE THE PATTERN</span><span aria-hidden="true">↗</span></button></div>
       </div>
       <div class="hero-bottom"><span>CURIOUS BY METHOD. PRACTICAL BY DESIGN.</span><a href="#about" aria-label="Scroll to About">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></a></div>
     </section>
