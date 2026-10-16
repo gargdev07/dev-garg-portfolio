@@ -13,7 +13,7 @@ The site uses HTML, CSS, and vanilla JavaScript. It has no build step, backend, 
 
 ## Sections
 
-About (including personal interests), featured projects, research and recognition, skills and technical interests, certifications, contact, and footer. Projects cover PropAnalytics, AAPL analysis and forecasting, an IPL match simulator, and a blue-carbon registry research prototype. Details follow the supplied portfolio brief. The academic panel lists a GPA of 8.27 / 10.
+About (including personal interests), featured projects, research and recognition, skills and technical interests, learning and certifications, contact, and footer. Projects cover PropAnalytics, AAPL analysis and forecasting, an IPL match simulator, and a blue-carbon registry research prototype. The academic panel lists a GPA of 8.27 / 10. Learning includes AWS Cloud Technical Essentials from Coursera, issued September 2026, alongside the Google Data Analytics and Anthropic AI Fluency credentials.
 
 ## Small interactions
 
@@ -47,7 +47,7 @@ All local assets use relative paths, so they work on the GitHub Pages project si
 - **Resume:** place the genuine PDF in `assets/documents/` and add a visible link in the hero or contact area. No resume file was present when this site was prepared.
 - **Contact:** update the GitHub, LinkedIn, and email anchors in `index.html`; keep the copy-button address in sync in `script.js`.
 - **Certifications:** add credential links only when a verified public URL is available.
-- **Social preview:** once the site has a public URL, add an absolute `og:image` URL for `assets/social-card.svg` in `index.html`; social platforms generally need an absolute image URL to fetch it reliably.
+- **Social preview:** Open Graph and Twitter metadata reference the absolute `assets/social-card.svg` URL for the published site.
 
 ## Accessibility and responsive design
 
