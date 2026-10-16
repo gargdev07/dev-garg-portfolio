@@ -103,7 +103,7 @@ svg { display: block; }
 .canvas-node:hover .node-core, .canvas-node:focus .node-core { fill: var(--butter); r: 7; }
 .canvas-node:focus-visible .node-aura { stroke-width: 2.5; }
 .canvas-speck { fill: var(--lavender); opacity: .64; transform-box: fill-box; transform-origin: center; }
-.canvas-annotation { position: absolute; right: 1%; bottom: 17%; display: flex; align-items: flex-start; gap: 9px; max-width: 165px; color: #aab8cc; font: 10px/1.55 var(--mono); }
+.canvas-annotation { position: absolute; top: 13%; right: 1%; display: flex; align-items: flex-start; gap: 9px; max-width: 165px; color: #aab8cc; font: 10px/1.55 var(--mono); }
 .annotation-mark { color: var(--cyan); font-size: 16px; }
 .canvas-current-note { transition: color .2s; }
 .canvas-footnote { margin-top: -4px; padding: 0 2px; font-size: 8px; letter-spacing: .08em; }
@@ -450,7 +450,7 @@ html.side-quest-mode .footer-easter p { border-color: #c8b6a3; background: #f4e7
   .hero-social { margin-top: 25px; }
   .hero-canvas { width: 100%; max-width: 700px; justify-self: center; }
   .living-canvas { max-height: 460px; }
-  .canvas-annotation { right: 2%; bottom: 16%; }
+  .canvas-annotation { top: 13%; right: 2%; }
   .canvas-index { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px 11px; margin-top: 12px; }
   .canvas-index a { display: flex; align-items: center; min-height: 38px; border-top: 1px solid #344052; color: #b9c6d6; font: 8px var(--mono); }
   .canvas-index a:hover, .canvas-index a:focus-visible { color: var(--cyan); }
@@ -530,7 +530,7 @@ html.side-quest-mode .footer-easter p { border-color: #c8b6a3; background: #f4e7
   .canvas-heading, .canvas-footnote { font-size: 7px; }
   .node-name { font-size: 19px; }
   .node-aura { r: 34; }
-  .canvas-annotation { right: 0; bottom: 17%; max-width: 120px; gap: 5px; font-size: 8px; }
+  .canvas-annotation { top: 13%; right: 0; max-width: 120px; gap: 5px; font-size: 8px; }
   .annotation-mark { font-size: 13px; }
   .canvas-index { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px 12px; margin-top: 4px; }
   .canvas-index a { min-height: 42px; font-size: 9px; }
