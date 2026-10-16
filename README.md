@@ -1,29 +1,30 @@
 # Dev Garg — Personal Portfolio
 
-A lightweight, responsive portfolio for Dev Garg, a Data Science student at NMIMS Mukesh Patel School of Technology Management & Engineering, Mumbai. Its “Look closer” direction pairs a clear professional first impression with small details about how Dev thinks and what he enjoys beyond his studies. The hero headline is “There's usually more to figure out.”
+A lightweight, responsive portfolio for Dev Garg, a Data Science student at NMIMS Mukesh Patel School of Technology Management & Engineering, Mumbai. Its “Curious Mind” direction follows observations into systems, patterns, probability, and verification, then opens an optional warm-toned side quest about life beyond study. The hero headline is “There's usually more to figure out.”
 
 ## Contents
 
 - `index.html` — semantic page structure and all portfolio content
-- `styles.css` — responsive dark visual system and reduced-motion handling
-- `script.js` — mobile navigation, active section states, and optional reveal effects
+- `styles.css` — responsive editorial visual system, side-quest color transition, and reduced-motion handling
+- `script.js` — project-linked observation map, “Look closer” disclosure, side-quest state, mobile navigation, active section states, and optional reveal effects
 - `assets/` — original D monogram SVG favicon and social preview artwork; the monogram is also inline in the navigation and footer
 
 The site uses HTML, CSS, and vanilla JavaScript. It has no build step, backend, database, paid service, or required API key. The design uses system fonts and needs no external assets or services to render.
 
 ## Sections
 
-About (including personal interests), featured projects, research and recognition, skills and technical interests, learning and certifications, contact, and footer. Projects cover PropAnalytics, AAPL analysis and forecasting, an IPL match simulator, and a blue-carbon registry research prototype. The academic panel lists a GPA of 8.27 / 10. Learning includes AWS Cloud Technical Essentials from Coursera, issued September 2026, alongside the Google Data Analytics and Anthropic AI Fluency credentials.
+About, four editorial case studies, an optional side quest with five personal interests, research and recognition, skills and technical interests, learning and certifications, contact, and footer. Projects cover PropAnalytics, AAPL analysis and forecasting, an IPL match simulator, and a blue-carbon registry research prototype. The academic panel lists a GPA of 8.27 / 10. Learning includes AWS Cloud Technical Essentials from Coursera, issued September 2026, alongside the Google Data Analytics and Anthropic AI Fluency credentials.
 
 ## Small interactions
 
 - “Look closer” reveals a short observation about following patterns. Its message expands in normal document flow.
-- “Show observation path” reveals the relationship path in the decorative hero illustration. The graphic is illustrative, not live or historical data.
+- The four observation points in the hero map link directly to their matching project investigations, show a relevant annotation on hover or keyboard focus, and have a visible text-link alternative on mobile. The diagrams are illustrative, not live or historical data.
+- “Take the detour” loosens the hero geometry, shifts the site's palette from blue to warm colors, and reveals the personal-interest collage. The transition is short, works with reduced motion, and can be reversed with “Back to the investigations.” The section remains available through normal scrolling when JavaScript is disabled.
 - The footer has an optional “One last signal” note.
-- The five personal-interest cards cover basketball, desserts, music, research, and travel. The market research card links to the AAPL study.
+- The asymmetric personal-interest collage covers basketball, desserts, music, research, and travel. The market research element links to the AAPL study.
 - Contact includes a visible `mailto:` address and an optional copy button with success, fallback, and failure feedback.
 
-The disclosures work without JavaScript. The connection control appears only when its JavaScript handler is available.
+The interest section and its internal links work without JavaScript. JavaScript adds the palette transition and disclosure behavior; the “Look closer” control appears only when its handler is available.
 
 ## Preview locally
 
@@ -51,7 +52,7 @@ All local assets use relative paths, so they work on the GitHub Pages project si
 
 ## Accessibility and responsive design
 
-The page uses semantic landmarks, a skip link, visible keyboard focus, a labeled mobile menu with `aria-expanded`, keyboard-operable disclosures, responsive layouts, and `prefers-reduced-motion` support. Core content is present in the HTML and remains available without JavaScript; the copy button is progressively revealed only when its handler is available. Decorative visuals are labeled or hidden from assistive technology as appropriate. Check the site at 320, 375, 768, 1024, and 1440 px before submission.
+The page uses semantic landmarks, a skip link, visible keyboard focus, a labeled mobile menu with `aria-expanded`, keyboard-operable controls, responsive layouts, and `prefers-reduced-motion` support. Core content is present in the HTML and remains available without JavaScript; the copy button is progressively revealed only when its handler is available. Decorative visuals are labeled or hidden from assistive technology as appropriate.
 
 ## Credits and deployment status
 
