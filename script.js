@@ -1,166 +1,67 @@
-(() => {
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  const lookToggle = document.querySelector('.look-toggle');
-  const lookMessage = document.querySelector('#look-closer-message');
-  if (lookToggle && lookMessage) {
-    lookMessage.hidden = true;
-    lookToggle.hidden = false;
-    lookToggle.addEventListener('click', () => {
-      const expanded = lookToggle.getAttribute('aria-expanded') !== 'true';
-      lookToggle.setAttribute('aria-expanded', String(expanded));
-      lookMessage.hidden = !expanded;
-      lookToggle.querySelector('.look-toggle-icon').textContent = expanded ? '−' : '+';
-    });
+// 1. Sugar-sprinkle starfield background (twinkles and drifts with your pointer)
+const c = document.getElementById('stars'), x = c.getContext('2d');
+let stars = [], mx = 0, my = 0;
+function resize() {
+  c.width = innerWidth; c.height = innerHeight;
+  stars = Array.from({ length: Math.min(220, innerWidth / 4) }, () => ({
+    x: Math.random() * c.width, y: Math.random() * c.height,
+    r: Math.random() * 1.4 + .2, p: Math.random() * 6.28, z: Math.random(), c: ['#fff', '#ffd1dc', '#ffe9a8', '#c9f2e6'][Math.floor(Math.random() * 4)]
+  }));
+}
+addEventListener('resize', resize); resize();
+addEventListener('pointermove', e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; });
+function draw(t) {
+  x.clearRect(0, 0, c.width, c.height);
+  for (const s of stars) {
+    x.globalAlpha = .3 + .7 * (.5 + .5 * Math.sin(t / 700 + s.p));
+    x.fillStyle = s.c; x.beginPath();
+    x.arc((s.x - mx * 30 * s.z + c.width) % c.width, (s.y - my * 30 * s.z + c.height) % c.height, s.r, 0, 6.28);
+    x.fill();
   }
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
 
-  const canvas = document.querySelector('.hero-canvas');
-  const canvasNodes = [...document.querySelectorAll('.canvas-node')];
-  const canvasNote = document.querySelector('.canvas-current-note');
-  const canvasNotes = {
-    systems: 'Organize many listings<br>into a relational model.',
-    patterns: 'Compare a long history<br>with a forecast.',
-    probability: 'Follow states as a<br>match changes.',
-    verification: 'Give evidence a<br>clearer record.'
-  };
-  if (canvas && canvasNodes.length) {
-    const activateNode = node => {
-      canvas.dataset.active = node.dataset.interest;
-      if (canvasNote) canvasNote.innerHTML = canvasNotes[node.dataset.interest];
-    };
-    const clearNode = node => {
-      if (document.activeElement !== node) {
-        canvas.removeAttribute('data-active');
-        if (canvasNote) canvasNote.innerHTML = 'Select a point<br>to follow a question.';
-      }
-    };
-    canvasNodes.forEach(node => {
-      node.addEventListener('pointerenter', () => activateNode(node));
-      node.addEventListener('pointerdown', () => activateNode(node));
-      node.addEventListener('pointerleave', () => clearNode(node));
-      node.addEventListener('focus', () => activateNode(node));
-      node.addEventListener('blur', () => clearNode(node));
-    });
-    if ('IntersectionObserver' in window) {
-      const canvasObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => canvas.classList.toggle('is-in-view', entry.isIntersecting));
-      }, {rootMargin: '80px'});
-      canvasObserver.observe(canvas);
+// 2. Solar system menu: click a planet to fly to that section
+const cap = document.getElementById('cap'), hint = cap.textContent;
+document.querySelectorAll('.planet').forEach(b => {
+  const show = () => cap.textContent = b.dataset.l, hide = () => cap.textContent = hint;
+  b.addEventListener('mouseenter', show); b.addEventListener('focus', show);
+  b.addEventListener('mouseleave', hide); b.addEventListener('blur', hide);
+  b.addEventListener('click', () => document.querySelector(b.dataset.t).scrollIntoView({ behavior: 'smooth' }));
+});
+
+// 3. Weight on other worlds (gravity relative to Earth)
+const g = { Mercury: .38, Venus: .91, Moon: .166, Mars: .38, Jupiter: 2.53, Saturn: 1.07, Uranus: .89, Neptune: 1.14 };
+const kg = document.getElementById('kg'), out = document.getElementById('w');
+function update() {
+  const m = parseFloat(kg.value) || 0;
+  out.innerHTML = Object.entries(g).map(([p, v]) => `<li>${p}: <b>${(m * v).toFixed(1)}</b> kg</li>`).join('');
+}
+kg.addEventListener('input', update); update();
+
+// 4. Quick copy email to clipboard
+const copyBtn = document.getElementById('copy-email-btn');
+if (copyBtn) {
+  copyBtn.addEventListener('click', async () => {
+    const email = 'gargdev738@gmail.com';
+    try {
+      await navigator.clipboard.writeText(email);
+    } catch {
+      const input = document.createElement('input');
+      input.value = email;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
     }
-  }
+    const orig = copyBtn.textContent;
+    copyBtn.textContent = '✓ Copied!';
+    copyBtn.classList.add('copied');
+    setTimeout(() => {
+      copyBtn.textContent = orig;
+      copyBtn.classList.remove('copied');
+    }, 2000);
+  });
+}
 
-  const sideQuestTrigger = document.querySelector('[data-side-quest-trigger]');
-  const sideQuestReturn = document.querySelector('[data-side-quest-return]');
-  if (sideQuestTrigger) {
-    sideQuestTrigger.addEventListener('click', () => {
-      document.documentElement.classList.add('side-quest-mode');
-    });
-  }
-  if (sideQuestReturn) {
-    sideQuestReturn.addEventListener('click', () => {
-      document.documentElement.classList.remove('side-quest-mode');
-    });
-  }
-
-  const emailAddress = 'gargdev738@gmail.com';
-  const copyEmailButton = document.querySelector('.copy-email');
-  const copyStatus = document.querySelector('#copy-status');
-  if (copyEmailButton && copyStatus) {
-    copyEmailButton.hidden = false;
-    copyEmailButton.addEventListener('click', async () => {
-      let copied = false;
-      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-        try {
-          await navigator.clipboard.writeText(emailAddress);
-          copied = true;
-        } catch (_) {
-          // Fall through to the selection-based copy when browser permission is unavailable.
-        }
-      }
-      if (!copied && typeof document.execCommand === 'function') {
-        let selectionField;
-        try {
-          selectionField = document.createElement('textarea');
-          selectionField.value = emailAddress;
-          selectionField.setAttribute('readonly', '');
-          selectionField.setAttribute('aria-hidden', 'true');
-          selectionField.style.position = 'fixed';
-          selectionField.style.opacity = '0';
-          selectionField.style.pointerEvents = 'none';
-          document.body.appendChild(selectionField);
-          selectionField.select();
-          copied = document.execCommand('copy');
-        } catch (_) {
-          copied = false;
-        } finally {
-          if (selectionField) selectionField.remove();
-          copyEmailButton.focus({preventScroll: true});
-        }
-      }
-      copyStatus.textContent = copied
-        ? 'Email copied.'
-        : 'Copy wasn’t available. Select the email address above to copy it.';
-    });
-  }
-
-  const menuButton = document.querySelector('.menu-toggle');
-  const nav = document.querySelector('#nav-links');
-  const navLinks = [...document.querySelectorAll('#nav-links a')];
-  if (menuButton && nav) {
-    const closeMenu = () => {
-      menuButton.setAttribute('aria-expanded', 'false');
-      menuButton.setAttribute('aria-label', 'Open navigation menu');
-      nav.classList.remove('is-open');
-    };
-    menuButton.addEventListener('click', () => {
-      const open = menuButton.getAttribute('aria-expanded') !== 'true';
-      menuButton.setAttribute('aria-expanded', String(open));
-      menuButton.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
-      nav.classList.toggle('is-open', open);
-    });
-    navLinks.forEach(link => link.addEventListener('click', closeMenu));
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') {
-        closeMenu();
-        menuButton.focus();
-      }
-    });
-    document.addEventListener('click', event => {
-      if (nav.classList.contains('is-open') && !nav.contains(event.target) && !menuButton.contains(event.target)) closeMenu();
-    });
-  }
-
-  const year = document.querySelector('#year');
-  if (year) year.textContent = new Date().getFullYear();
-
-  const sections = [...document.querySelectorAll('main section[id]')];
-  if ('IntersectionObserver' in window) {
-    const activeObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const target = document.querySelector('#nav-links a[href="#' + entry.target.id + '"]');
-          navLinks.forEach(link => link.removeAttribute('aria-current'));
-          if (target) target.setAttribute('aria-current', 'location');
-        }
-      });
-    }, {rootMargin: '-25% 0px -65% 0px'});
-    sections.forEach(section => activeObserver.observe(section));
-
-    if (!reduceMotion) {
-      const revealItems = document.querySelectorAll('.section-heading, .about-body, .case-study, .interest-card, .research-card, .skill-group, .cert-item');
-      document.body.classList.add('js-ready');
-      const revealObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      }, {threshold: 0.08});
-      revealItems.forEach(item => {
-        item.classList.add('reveal');
-        revealObserver.observe(item);
-      });
-    }
-  }
-})();
